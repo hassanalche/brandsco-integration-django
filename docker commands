@@ -1,0 +1,6 @@
+$(aws ecr get-login --no-include-email --region us-east-1 --profile brandsco)
+pip freeze > requirement.txt
+docker build -t brandsco-integration-pos .
+docker tag brandsco-integration-pos:latest 031648304385.dkr.ecr.us-east-1.amazonaws.com/brandsco-integration-pos:latest
+docker push 031648304385.dkr.ecr.us-east-1.amazonaws.com/brandsco-integration-pos:latest
+
