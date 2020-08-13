@@ -17,9 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include, url
 
+from Integration import updater
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'integration', include('Integration.urls')),
 
 ]
+
+updater.start()

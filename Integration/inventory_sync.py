@@ -17,7 +17,7 @@ import pandas as pd
 class InventorySync(object):
 
     def inventorySync(self):
-
+        print("syncing")
         products = self.getAllProductsFromShopify()
 
         unfullfilled = self.getUnFulFilledInventory()
@@ -96,22 +96,22 @@ class InventorySync(object):
                     if int(diference) >= 0:
                         worksheet.write(rows, 5, diference)
                         worksheet.write(rows, 6, "Synced")
-                        # if int(variant["inventory_quantity"]) != int(diference):
-                        #
-                        #     status,msg = self.inventoryCall(locationId, variant["inventory_item_id"], diference)
-                        #     if not status:
-                        #         worksheet.write(rows, 6, msg)
+                        if int(variant["inventory_quantity"]) != int(diference):
+
+                            status,msg = self.inventoryCall(locationId, variant["inventory_item_id"], diference)
+                            if not status:
+                                worksheet.write(rows, 6, msg)
                     else:
                         worksheet.write(rows, 5, "0")
                         worksheet.write(rows, 6, "Synced With 0")
-                        # if int(variant["inventory_quantity"]) != 0:
-                        #     status, msg = self.inventoryCall(locationId, variant["inventory_item_id"], 0)
-                        #     if not status:
-                        #         worksheet.write(rows, 6, msg)
+                        if int(variant["inventory_quantity"]) != 0:
+                            status, msg = self.inventoryCall(locationId, variant["inventory_item_id"], 0)
+                            if not status:
+                                worksheet.write(rows, 6, msg)
 
                 rows = rows + 1
         workbook.close()
-        # self.sendEmail()
+        self.sendEmail()
 
     def get_session_id(self):
         url = "http://86.96.206.210:4488/BrandsWebAPI/api/login/"
@@ -267,8 +267,8 @@ class InventorySync(object):
         msg = MIMEMultipart()
         msg['From'] = "dev@alchemative.net"
 
-        # msg['To'] = "hassan.sajjad@alchemative.com,zain.hameed@limelight.pk,saad.shafiq@limelight.pk,saqib.hussain@limelight.pk,faisal.imran@limelight.pk,hammad.raza@limelight.pk,shehryar.asif@limelight.pk,mushfiq.salam@limelight.pk,wj.shahmeer@limelight.pk,gm@limelight.pk,salman.qadri1@gmail.com,dilawar.azam@limelight.pkm.usman@limelight.pk"
-        msg['To'] = "hassan.sajjad@alchemative.com"
+        msg['To'] = "dal@entersoft.ae, khawaja.tayyab@alchemative.com, hassan.sajjad@alchemative.com"
+        # msg['To'] = "hassan.sajjad@alchemative.com"
 
         msg['Date'] = str(datetime.datetime.now().date())
         msg['Subject'] = "Inventory Sync"
@@ -279,14 +279,13 @@ class InventorySync(object):
 
         encoders.encode_base64(part)
 
-        part.add_header('Content-Disposition', 'attachment; filename="candela.xlsx"')
+        part.add_header('Content-Disposition', 'attachment; filename="report.xlsx"')
         msg.attach(part)
 
-        to = ["hassan.sajjad@alchemative.com"]
-        # to =  ["hassan.sajjad@alchemative.com","zain.hameed@limelight.pk","saad.shafiq@limelight.pk","saqib.hussain@limelight.pk","faisal.imran@limelight.pk","hammad.raza@limelight.pk","shehryar.asif@limelight.pk","mushfiq.salam@limelight.pk","wj.shahmeer@limelight.pk","gm@limelight.pk","salman.qadri1@gmail.com","dilawar.azam@limelight.pk","m.usman@limelight.pk"]
+        # to = ["hassan.sajjad@alchemative.com"]
+        to =  ["dal@entersoft.ae", "khawaja.tayyab@alchemative.com", "hassan.sajjad@alchemative.com"]
 
-
-        smtp = smtplib.SMTP('smtp.emailsrvr.com', 25,587)
+        smtp = smtplib.SMTP('smtp.emailsrvr.com', 587)
         smtp.starttls()
 
         smtp.login("dev@alchemative.net", "avaya@1209")
@@ -305,7 +304,7 @@ class InventorySync(object):
 
 
 # bl = InventorySync()
-# print(bl.get_products_from_pos("dcee2a9e-43bf-4f8c-bea1-0adf8434f504"))
+# bl.inventorySync()
 
 
 
