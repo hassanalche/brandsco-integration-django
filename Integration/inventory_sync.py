@@ -265,9 +265,9 @@ class InventorySync(object):
 
     def sendEmail(self):
         msg = MIMEMultipart()
-        msg['From'] = "dev@alchemative.net"
+        msg['From'] = "erpsystem@brandsco.com"
 
-        msg['To'] = "dal@entersoft.ae, khawaja.tayyab@alchemative.com, hassan.sajjad@alchemative.com"
+        msg['To'] = "itd@brandsco.com, alvir@brandsco.com, inventory@brandsco.com, khawaja.tayyab@alchemative.com"
         # msg['To'] = "hassan.sajjad@alchemative.com"
 
         msg['Date'] = str(datetime.datetime.now().date())
@@ -283,13 +283,13 @@ class InventorySync(object):
         msg.attach(part)
 
         # to = ["hassan.sajjad@alchemative.com"]
-        to =  ["dal@entersoft.ae", "khawaja.tayyab@alchemative.com", "hassan.sajjad@alchemative.com"]
+        to =  ["itd@brandsco.com", "alvir@brandsco.com", "inventory@brandsco.com", "khawaja.tayyab@alchemative.com"]
 
-        smtp = smtplib.SMTP('smtp.emailsrvr.com', 587)
+        smtp = smtplib.SMTP('smtp.office365.com', 587)
         smtp.starttls()
 
-        smtp.login("dev@alchemative.net", "avaya@1209")
-        smtp.sendmail("dev@alchemative.net", to, msg.as_string())
+        smtp.login("erpsystem@brandsco.com", "Br@nds#123")
+        smtp.sendmail("erpsystem@brandsco.com", to, msg.as_string())
         smtp.quit()
 
     def get_products_from_pos(self):

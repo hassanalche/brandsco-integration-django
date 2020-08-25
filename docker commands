@@ -5,3 +5,4 @@ docker tag brandsco-integration-pos:latest 031648304385.dkr.ecr.us-east-1.amazon
 docker push 031648304385.dkr.ecr.us-east-1.amazonaws.com/brandsco-integration-pos:latest
 
 aws ecs update-service  --service brandsco-pos-service --cluster brandsco-cluster --force-new-deployment --region us-east-1 --profile brandsco
+
