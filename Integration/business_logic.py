@@ -71,8 +71,10 @@ class BusinessLogic(object):
                 # try:
                 if i < 5:
                     var = shopify.Variant.find(line.variant_id)
-
-                    discount = float(var.compare_at_price) - float(line.price)
+                    if var.compare_at_price is not None:
+                        discount = float(var.compare_at_price) - float(line.price)
+                    else:
+                        discount = 0
                     break
                 else:
                     discount = 0
