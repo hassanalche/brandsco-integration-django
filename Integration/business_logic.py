@@ -20,7 +20,7 @@ class BusinessLogic(object):
 
         order = shopify.Order.find(order_id)
 
-        Orders.objects.create(order_name = order.name, erp_status = "created")
+        order_db = Orders.objects.create(order_name = order.name, erp_status = "created")
 
         shipping = getattr(order, "shipping_address", "")
 
@@ -148,6 +148,13 @@ class BusinessLogic(object):
         response = requests.post(url = url, headers = header, json = erp_body)
 
         print(response.status_code)
+        if response.status_code == 200:
+            order_db.is_erp_created = True
+            order_db.save()
+        else:
+            order_db.order_creation_error = response.json()
+            order_db.save()
+
 
     def order_cancel (self, request):
         inv = InventorySync()
@@ -179,6 +186,10 @@ class BusinessLogic(object):
 
         print(response.status_code)
 
+        if response.status_code == 200:
+            o.is_erp_cancelled = True
+            o.save()
+
     def order_fulfill (self, request):
         inv = InventorySync()
 
@@ -207,4 +218,6 @@ class BusinessLogic(object):
         }
         response = requests.post(url = url, headers = header, json = erp_body)
 
-        print(response.status_code)
+        if response.status_code == 200:
+            o.is_erp_fulfilled = True
+            o.save()

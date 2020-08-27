@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 import requests
-import threading
+from threading import Thread
 from Integration.business_logic import BusinessLogic
 
 
@@ -42,21 +42,25 @@ class Products(APIView):
 class OrdersCreation(APIView):
     def post(self, request):
         bl = BusinessLogic()
-        t = threading.Thread(bl.order_creation(request))
+        t = Thread(target = bl.order_creation, args = (request,))
+        t.daemon = True
         t.start()
+        print("sending response")
         return Response()
 
 class OrderCancel(APIView):
     def post(self, request):
         bl = BusinessLogic()
-        t = threading.Thread(bl.order_cancel(request))
+        t = Thread(target = bl.order_cancel, args = (request,))
+        t.daemon = True
         t.start()
         return Response()
 
 class Orderfulfill(APIView):
     def post(self, request):
         bl = BusinessLogic()
-        t = threading.Thread(bl.order_fulfill(request))
+        t = Thread(target = bl.order_fulfill, args = (request,))
+        t.daemon = True
         t.start()
         return Response()
 
