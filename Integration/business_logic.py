@@ -24,10 +24,12 @@ class BusinessLogic(object):
 
         shipping = getattr(order, "shipping_address", "")
 
+
+
         try:
             address1 = order.shipping_address.address1
         except Exception as e:
-            print(e)
+            # print(e)
             address1 = ""
         address1 = address1.replace('"', ' ')
         address1 = address1.replace("'", " ")
@@ -35,7 +37,7 @@ class BusinessLogic(object):
         try:
             address2 = order.shipping_address.address2
         except Exception as e:
-            print(e)
+            # print(e)
             address2 = ""
         address2 = address2.replace('"', ' ')
         address2 = address2.replace("'", " ")
@@ -43,15 +45,21 @@ class BusinessLogic(object):
         try:
             billing_address1 = order.billing_address.address1
         except Exception as e:
-            print(e)
+            # print(e)
             billing_address1 = ""
         billing_address1 = billing_address1.replace('"', ' ')
         billing_address1 = billing_address1.replace("'", " ")
 
+        if shipping == "":
+            shipping = order.billing_address
+            same_as_billing = 1
+        else:
+            same_as_billing = 0
+
         try:
             billing_address2 = order.billing_address.address2
         except Exception as e:
-            print(e)
+            # print(e)
             billing_address2 = ""
         billing_address2 = billing_address2.replace('"', ' ')
         billing_address2 = billing_address2.replace("'", " ")
@@ -60,18 +68,19 @@ class BusinessLogic(object):
         for line in order.line_items:
 
             for i in range(0, 5):
-                try:
-                    if i < 3:
-                        var = shopify.Variant.find(line.variant_id)
-                        discount = var.compare_at_price - line.price
-                        break
-                    else:
-                        discount = 0
-                        break
-                except Exception as e:
-                    time.sleep(1)
-                    print(e)
-                    i = i + 1
+                # try:
+                if i < 5:
+                    var = shopify.Variant.find(line.variant_id)
+
+                    discount = float(var.compare_at_price) - float(line.price)
+                    break
+                else:
+                    discount = 0
+                    break
+                # except Exception as e:
+                #     time.sleep(1)
+                #     print(e)
+                #     i = i + 1
             if order.financial_status == "pending":
                 paid = 1
             else:
@@ -96,14 +105,14 @@ class BusinessLogic(object):
                 "BillingTelephone1": getattr(order.billing_address, "phone", ""),
                 "BillingFirstName": getattr(order.billing_address, "first_name", ""),
                 "BillingLastName": getattr(order.billing_address, "last_name", ""),
-                "SameAsShippingAddress": 0,
+                "SameAsShippingAddress": same_as_billing,
                 "ShippingAddress1": address1,
                 "ShippingAddress2": address2,
                 "ShippingPostalCode": "",
                 "ShippingCity": getattr(shipping, "city", ""),
                 "ShippingCountry": getattr(shipping, "country", ""),
                 "ShippingRegion": "",
-                "ShippingTelephone1": getattr(shipping, "first_name", ""),
+                "ShippingTelephone1": getattr(shipping, "phone", ""),
                 "ShippingFirstName": getattr(shipping, "first_name", ""),
                 "ShippingSurname": "",
                 "OrderTotalValue": 100,
@@ -113,7 +122,7 @@ class BusinessLogic(object):
                 "CreditCard_TranID": "",
                 "ShippingandHandlingCharges": 30.00,
                 "Code": "AA00000012246",
-                "Price": line.price,
+                "Price": float(line.price),
                 "Quantity": line.quantity,
                 "LineDiscount": discount,
                 "DiscountName": ""
